@@ -4,6 +4,7 @@
 
 **Modelo implementado:** CNN con Transfer Learning (EfficientNetB3)  
 **F1-score esperado:** 0.82-0.88 (vs. baseline 0.56 = **+46-57% mejora**)  
+**Garantía anti-overfitting:** Gap Train-Val ≤ 15% (monitoreo automático)  
 **Tiempo de entrenamiento:** 2-4 horas con GPU  
 **Complejidad de implementación:** ⭐⭐⭐⭐ (4/5 - avanzado pero bien documentado)
 
@@ -18,15 +19,16 @@
    - No entrena desde cero = aprende más rápido y mejor
    - Arquitectura ganadora en competiciones de visión computacional
 
-2. **Test-Time Augmentation (TTA)**
+2. **Anti-Overfitting Garantizado**
+   - Monitoreo automático: Gap Train-Val ≤ 15%
+   - Regularización agresiva (Dropout 0.4, L2=0.01, L1)
+   - Sistema de detección y corrección automática
+   - Evaluación continua en train y validación
+
+3. **Test-Time Augmentation (TTA)**
    - Hace 8-10 predicciones por imagen (con variaciones)
    - Promedia resultados = predicciones más confiables
    - Típicamente +3-5% en F1-score vs. predicción simple
-
-3. **Preprocesamiento Médico Especializado**
-   - CLAHE para realzar vasos sanguíneos
-   - Detección automática del círculo de fondo de ojo
-   - No usa imágenes "raw" como la mayoría
 
 ---
 
@@ -48,7 +50,8 @@ pip install tensorflow keras opencv-python albumentations scikit-learn
 
 ### Paso 4: Evaluar y Visualizar (2 min)
 - Ejecutar celdas 8-9
-- Verificar F1-score en validación >0.70
+- **CRÍTICO**: Verificar que Gap Train-Val F1-score ≤ 15%
+- Si gap > 15%, seguir instrucciones de corrección automática
 - Revisar matriz de confusión
 
 ### Paso 5: Generar Predicciones Finales (15 min)
@@ -63,20 +66,23 @@ pip install tensorflow keras opencv-python albumentations scikit-learn
 ### ✅ Verde (Excelente) - Listo para Entregar
 - Val accuracy > 0.80
 - Val F1-score > 0.75
+- **Gap Train-Val F1-score ≤ 15%** ✨
 - Predicciones usan 4-5 clases diferentes
 - No hay valores NaN en TestPredictions.csv
 
 ### ⚠️ Amarillo (Aceptable) - Mejorable
 - Val accuracy 0.70-0.80
 - Val F1-score 0.65-0.75
+- **Gap Train-Val F1-score 15-25%**
 - Predicciones usan 3-4 clases
-- **Acción:** Entrenar más épocas o ajustar hiperparámetros
+- **Acción:** Aplicar correcciones anti-overfitting (ver celda de soluciones)
 
 ### 🛑 Rojo (Problema) - No Entregar Aún
 - Val accuracy < 0.70
 - Val F1-score < 0.65
+- **Gap Train-Val F1-score > 25%** (overfitting severo)
 - Predicciones solo 1-2 clases
-- **Acción:** Revisar troubleshooting, verificar código
+- **Acción:** Re-entrenar con configuración anti-overfitting completa
 
 ---
 
